@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>MicaWatcher Demo</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="src/micawatcher.css">
+    <link rel="stylesheet" href="../base-style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <h1>MicaWatcher Demo</h1>
+        <p>This is the demonstration page for <a href="https://github.com/kevinmaddox/micawatcher">MicaWatcher</a>, a simple JavaScript object-watching widget.</p>
+        <p>There are a few objects already created and added to the watch list for you to play with:</p>
+        <ul>
+            <li>demoObject</li>
+            <li>mouseInfo</li>
+            <li>keyboardInfo</li>
+        </ul>
+        <p>Try removing and re-adding them from the list. You can also add new objects via your browser's JavaScript console and then watch them via the MicaWatcher interface. Keep in mind you can only watch objects, rather than individual variables.</p>
+        <p>Below are some controls to manipulate and display the real-time modification of object data.</p>
+        <br>
+        <p><code>demoObject</code> > <code>var1</code></p>
+        <div>
+            <input type="button" value="Increment" id="btn-var1-inc">
+            <input type="button" value="Decrement" id="btn-var1-dec">
+        </div>
+        <br>
+        <p><code>demoObject</code> > <code>var2</code></p>
+        <div>
+            <input type="button" value="Random Fruit" id="btn-var2-randomize">
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../micawatcher/src/micawatcher.js"></script>
+    <script type="text/javascript">
+        
+        var demoObject = {
+            'var1': 0,
+            'var2': 'apple'
+        };
+        
+        var mouseInfo = {
+            isHeld:       false,
+            x:            0,
+            y:            0
+        };
+        
+        var keyboardInfo = {
+            activeKey: '',
+            lastKey: ''
+        };
+        
+        var watcher = new MicaWatcher(true, {
+            'height': 480
+        });
+        watcher.watch(demoObject, 'Demonstration Object');
+        watcher.watch(mouseInfo, 'Mouse Information');
+        watcher.watch(keyboardInfo, 'Keyboard Information');
+        
+        document.addEventListener('mousemove', updateMouseInfo);
+        document.addEventListener('mousedown', updateMouseInfo);
+        document.addEventListener('mouseup', updateMouseInfo);
+        
+        document.addEventListener('keydown', updateKeyboardInfo);
+        document.addEventListener('keyup', updateKeyboardInfo);
+        
+        document.getElementById('btn-var1-inc').addEventListener('click', function() {
+            demoObject.var1++;
+        });
+        
+        document.getElementById('btn-var1-dec').addEventListener('click', function() {
+            demoObject.var1--;
+        });
+        
+        document.getElementById('btn-var2-randomize').addEventListener('click', function() {
+            let words = ['apple', 'banana', 'kiwi', 'orange', 'papaya'];
+            demoObject.var2 = words[Math.floor(Math.random() * words.length)];
+        });
+        
+        function updateMouseInfo() {
+            switch (event.type) {
+                case 'mousemove':
+                    mouseInfo.x = event.x;
+                    mouseInfo.y = event.y;
+                    
+                    break;
+                case 'mousedown':
+                    if (event.button !== 0)
+                        return;
+                    
+                    mouseInfo.isHeld = true;
+                    
+                    break;
+                case 'mouseup':
+                    if (event.button !== 0)
+                        return;
+                    
+                    mouseInfo.isHeld = false;
+                    
+                    break;
+            }
+        }
+        
+        function updateKeyboardInfo() {
+            switch (event.type) {
+                case 'keydown':
+                    keyboardInfo.activeKey = event.key;
+                    keyboardInfo.lastKey = event.key;
+                    
+                    break;
+                case 'keyup':
+                    keyboardInfo.activeKey = '';
+                    
+                    break;
+            }
+            
+        }
+        
+    </script>
+</body>
+</html>

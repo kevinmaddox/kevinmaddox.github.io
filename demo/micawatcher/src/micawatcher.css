@@ -1,0 +1,236 @@
+/**
+ *  _  _ _ ___  ___ _  _ ___ _____ ___ _   _ ___ ___
+ * | \/ | |  _|| _ | || | _ |_   _|  _| |_| | __| _ |
+ * | .. | | |_ |   |    |   | | | | |_|  _  | _||   \
+ * |_||_|_|___||_|_|_/\_|_|_| |_| |___|_| |_|___|_|\_|
+ *
+ *
+ * MicaWatcher
+ * JavaScript object-watching widget
+ *
+ * Wally Chantek, 2020
+ * https://github.com/wallychantek/micawatcher
+ *
+**/
+
+/* = Initialization ========================================================= */
+.micawatcher, .micawatcher * {
+    border: none;
+    box-sizing: border-box;
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+/* = Style ================================================================== */
+.micawatcher {
+    background: #f8f8f8;
+    border: 1px solid #70758c;
+    border-radius: 2px;
+}
+
+.micawatcher-title-bar {
+    background: linear-gradient(to right, #c3ecf7 0%,#afaee5 100%);
+    border-bottom: 1px solid #70758c;
+}
+
+.micawatcher-title-bar h1,
+.micawatcher-item h2 {
+    font-weight: bold;
+}
+
+.micawatcher-collapse-button,
+.micawatcher-remove-button {
+    border-radius: 2px;
+}
+
+.micawatcher-collapse-button div {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAB3RJTUUH5AofEgYQV4RsoAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAAHklEQVR4nGP4//8/Az6MV5I4BQWlPf/xYcIKaO9IAFHitnHuVUnVAAAAAElFTkSuQmCC');
+}
+
+.micawatcher-remove-button div {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAB3RJTUUH5AofEgYJM+/EYAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAALUlEQVR4nGMoKO35D8JAwICMYeJwBrIiZDEMAXQNGEaim0acArxWEHQkIW8CAEeNqTlO8xFcAAAAAElFTkSuQmCC');
+}
+
+.micawatcher-item > div {
+    background: #d8dcf0;
+}
+
+.micawatcher-obj-name-field,
+.micawatcher-display-name-field {
+    border: 1px solid #70758c;
+}
+
+.micawatcher-add-object-button {
+    border-radius: 5px;
+}
+
+.micawatcher-status-bar {
+    border-top: 1px solid #ccccea;
+}
+
+.micawatcher-pause-button {
+    background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAA8CAYAAABmdppWAAAAB3RJTUUH5AofESgSsMu6+QAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAABoUlEQVR4nOXVy0rDQBQG4D6yG9/C13EhiEKxoHhD0dLWXkxs2ubWNpkkTdLUlBwhGDKZzMyZheDiC1n9MMyZ/3TyPO+cnJ7lheIfC8JIlAIVwRDoBUkFJhgCtyShkgmGwLUXM4kEQ6C73XHhCYZAex0JYQVDoOVGUmjBELiyQ5TfwRA4M4gSRRYE9mdEiTJwoIUotSMP9VBK46V8zHdCWsdmbMRcuAd7ukyZhJ/ebJVSSZeDZmUV6PrS7QNQUrDFR+kKUB5YBKX7A1C2U+Ikq0BfShRnVNJjE0R7JuHB9sOUC/fTa1qjMuv1Z436iZTG+nK2MUqtYA17p0S5AibLWIky8NNMUGpH1qxESuOlfDmpkNaxMZw9F+7BXq4zJuGnt9pkVNLlYHuHCnR9Of43+Ec7RTMjoGynTBdhBfpSJkZIJT02Iz1gEh7soRZw4X56/SkR0loOb2MipbG+Xkc+Sq1gbx4tJcoVcH6lK1EGXnTnKLUjX/YWUhov5frWFNI6Nt17mwv3YPeeXCbhp3f3sqGSLoeHd68CXV/PAwL+5E45AhJDIljpNVMWAAAAAElFTkSuQmCC');
+}
+
+.micawatcher-pause-button-paused {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAA8CAYAAABmdppWAAAAB3RJTUUH5AofERwjWj9JNAAAABd0RVh0U29mdHdhcmUAR0xEUE5HIHZlciAzLjRxhaThAAAACHRwTkdHTEQzAAAAAEqAKR8AAAAEZ0FNQQAAsY8L/GEFAAAABmJLR0QA/wD/AP+gvaeTAAAB7ElEQVR4nNXWy07CUACEYR/ZjW/h67gwMZoQSTTeolGDiiIoIpR7aWlLEeMclzNjTGTh4l/xZRK09JyN1Wq1sbm1vWJ9fcZyHh/GaUFjoz95gMksp6lB5wHGcU5Tg84DDCcZTQ06DzAYz2lq0HmAaJjS1KDzAL1BSlODzgO8RwlNDToP0GjHNDXoPMBtI6apQecBas2EpgadB7hrJTQ16DzAw+ucpgadB6i3M5oadB7gqVPQ1KDz4TF4L2jysTEeoNkraWrQeYBWtKSpQed/fKX/+ghYy5lSLJY09ZWdB8jykqYGnQdIs5KmBp0HmKULmhp0HmCaFDQ16PyajtFpTpPHqPEA/XFGU4POA7SjOU0NOg/w2MloatB5gOduTlODzn+/jnKafn1pD/DSL2hq0PnwR+4vaPKfYjxAZ1jS1KDz4a4yKmnybmN8uJ5NljQ16Hx48qcfNPlLMf6fnCnNbkqTD7bx4WrxltDUoPPhx95OaPLlYDzAfWtGU4POhwtkc0ZTg86HO/NTTFODzgNc12OaGnQe4Op+SlODzgMcnvVoatB5gJ39Fk0NOg+wW3mlqUHnAfaqbzQ16DzAwVGXpgadB6icRDQ16DxA9XxAU4POAxxfjmhq0HmA05sJTQ06D3BRi2lq0Pk/PwI+AaJ+Ps7UefRNAAAAAElFTkSuQmCC');
+}
+
+.micawatcher-pause-status,
+.micawatcher-general-status {
+    align-items: center;
+    border-left: 1px solid #ccccea;
+}
+
+.micawatcher-button {
+    background: linear-gradient(to bottom, #f7fafc 0%,#e6e9f4 50%,#d5def2 51%,#e5edff 100%);
+    border: 1px solid #70758c;
+}
+
+.micawatcher-button:hover {
+    background: linear-gradient(to bottom, #ffffff 0%,#eaeef7 50%,#dce6f7 51%,#eff4ff 100%);
+}
+
+.micawatcher-button:hover:active {
+    background: linear-gradient(to bottom, #e6eef7 0%,#d0d8f2 50%,#b3bce0 51%,#d4ddf7 100%);
+}
+
+/* = Structure ============================================================== */
+/* - Main containers -------------------------------------------------------- */
+.micawatcher {
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+    min-width: 320px;
+    overflow: hidden;
+    position: absolute;
+    resize: both;
+}
+
+.micawatcher-title-bar {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 4px;
+    user-select: none;
+}
+
+.micawatcher-items {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: scroll;
+    padding: 0 8px;
+    margin-top: 8px;
+}
+
+.micawatcher-add-data-bar {
+    display: flex;
+    align-items: center;
+    padding: 8px 4px;
+}
+
+.micawatcher-status-bar {
+    align-items: stretch;
+    cursor: default;
+    display: flex;
+    padding: 4px 8px;
+    user-select: none;
+}
+
+/* - Container elements ----------------------------------------------------- */
+.micawatcher-item > div {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    padding: 2px 4px;
+}
+
+.micawatcher-item h2 {
+    flex-grow: 1;
+    user-select: none;
+}
+
+.micawatcher-item p {
+    margin-bottom: 12px;
+    white-space: pre;
+}
+
+.micawatcher-obj-name-field,
+.micawatcher-display-name-field {
+    margin-right: 8px;
+    padding: 4px;
+    width: 100%;
+    flex-basis: 100%;
+    min-width: 0;
+}
+
+.micawatcher-add-object-button {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    padding: 0 8px;
+    user-select: none;
+}
+
+.micawatcher-pause-button {
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+}
+
+.micawatcher-pause-button:hover {
+    background-position: 0px -20px;
+}
+
+.micawatcher-pause-button:hover:active {
+    background-position: 0px -40px;
+}
+
+.micawatcher-pause-status,
+.micawatcher-general-status {
+    align-items: center;
+    display: flex;
+    margin-left: 8px;
+    padding-left: 8px;
+}
+
+/* - Generic elements and atomic classes ------------------------------------ */
+.micawatcher-button {
+    cursor: pointer;
+}
+
+.micawatcher-collapse-button,
+.micawatcher-remove-button {
+    align-items: center;
+    display: flex;
+    height: 16px;
+    justify-content: center;
+    margin-left: 4px;
+    width: 16px;
+}
+
+.micawatcher-collapse-button div {
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 8px;
+    width: 8px;
+}
+
+.micawatcher-remove-button div {
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 8px;
+    width: 8px;
+}
+
+.micawatcher-unselectable {
+    cursor: default;
+    user-select: none;
+}
