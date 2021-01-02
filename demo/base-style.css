@@ -47,3 +47,7 @@ input[type=button] {
     border: 1px solid var(--main-border-color);
     border-radius: 6px;
 }
+
+.wrapper > *:last-child {
+    margin-bottom: 0;
+}
