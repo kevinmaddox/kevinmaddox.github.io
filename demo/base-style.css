@@ -1,6 +1,9 @@
 :root {
+    --main-color: #24292e;
     --main-border-color: #eaecef;
     --code-color: #f3f3f3;
+    --faded-color: #a0a0a0;
+    --link-color: #0366d6;
 }
 
 * {
@@ -9,13 +12,36 @@
     padding: 0;
 }
 
+h1, h2,
+p, a, li, input {
+    color: var(--main-color);
+}
+
 h1 {
     border-bottom: 1px solid var(--main-border-color);
-    margin-bottom: 16px;
     font-size: 2em;
     font-weight: 600;
     line-height: 1.25;
-    margin: 0.75rem 0;
+    margin: 16px 0;
+    padding-bottom: .3em;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 span {
+    font-size: 1.25rem;
+    font-weight: normal;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+h2 {
+    border-bottom: 1px solid var(--main-border-color);
+    font-size: 1.5em;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 24px 0 16px;
     padding-bottom: .3em;
     text-align: left;
 }
@@ -23,6 +49,15 @@ h1 {
 p, div, ul {
     margin-bottom: 16px;
     margin-top: 0;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 ul {
@@ -39,7 +74,7 @@ input[type=button] {
     padding: 2px 4px;
 }
 
-.wrapper {
+.container {
     width: 480px;
     background: #ffffff;
     padding: 16px 32px 32px;
@@ -48,6 +83,21 @@ input[type=button] {
     border-radius: 6px;
 }
 
-.wrapper > *:last-child {
+.container > *:last-child {
     margin-bottom: 0;
+}
+
+.resize {
+    resize: both;
+    overflow: auto;
+}
+
+.resize-x {
+    resize: horizontal;
+    overflow: auto;
+}
+
+.resize-y {
+    resize: vertical;
+    overflow: auto;
 }

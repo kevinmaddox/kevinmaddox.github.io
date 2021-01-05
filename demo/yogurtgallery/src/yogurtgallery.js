@@ -37,7 +37,7 @@ class YogurtGallery {
                 'Error',
                 `Invalid value for argument rootPath. `
               + `Value must be of type string `
-              + `but was of type ${(typeof rootPath)}. `
+              + `but was of type ${(typeof rootPath)}.`
             );
             return;
         }
@@ -47,7 +47,7 @@ class YogurtGallery {
                 'Error',
                 `Invalid value for argument databaseFileName. `
               + `Value must be of type string `
-              + `but was of type ${(typeof databaseFileName)}. `
+              + `but was of type ${(typeof databaseFileName)}.`
             );
             return;
         }
@@ -57,7 +57,7 @@ class YogurtGallery {
                 'Error',
                 `Invalid value for argument thumbnailDirectoryName. `
               + `Value must be of type string `
-              + `but was of type ${(typeof thumbnailDirectoryName)}. `
+              + `but was of type ${(typeof thumbnailDirectoryName)}.`
             );
             return;
         }
@@ -115,7 +115,7 @@ class YogurtGallery {
                         this._report(
                             'Warning',
                             `Invalid value for option ${key}. `
-                          + 'Value must be either "fluid" or "fixed".'
+                          + 'Value must be either "fluid" or "fixed". '
                           + `Defaulting value to ${validOptions[key][1]}.`
                         );
                         options[key] = validOptions[key][1];

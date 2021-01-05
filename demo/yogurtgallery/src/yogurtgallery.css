@@ -14,21 +14,20 @@
 **/
 
 /* = Initialization ========================================================= */
-#yogurtgallery,
 #yogurtgallery * {
-    background-image: none;
     box-sizing: border-box;
+    background-image: none;
     margin: 0;
     padding: 0;
 }
 
 /* = Style ================================================================== */
-.yogurtgallery-item:not(:nth-child(1)) {
+#yogurtgallery .yogurtgallery-item:not(:nth-child(1)) {
     background: #808080;
     border: 1px solid black;
 }
 
-.yogurtgallery-item:not(:nth-child(1)):hover {
+#yogurtgallery .yogurtgallery-item:not(:nth-child(1)):hover {
     border-image-slice: 1;
     border-image-source: linear-gradient(
         to bottom right,
@@ -40,7 +39,7 @@
     );
 }
 
-.yogurtgallery-item-thumbnail-container {
+#yogurtgallery .yogurtgallery-item-thumbnail-container {
     border: 1px solid #ffffff;
 }
 
@@ -54,7 +53,7 @@
     background: #5f5f66;
 }
 
-.yogurtgallery-item-thumbnail {
+#yogurtgallery .yogurtgallery-item-thumbnail {
     background-position: center center;
     background-size: cover;
     display: block;
@@ -63,7 +62,7 @@
     width: 100%;
 }
 
-.yogurtgallery-item:hover .yogurtgallery-item-thumbnail {
+#yogurtgallery .yogurtgallery-item:hover .yogurtgallery-item-thumbnail {
     opacity: 0.75;
     transform: scale(1.2);
 }
@@ -102,30 +101,30 @@
 }
 
 /* - Gallery items ---------------------------------------------------------- */
-.yogurtgallery-item:nth-child(1) {
+#yogurtgallery-gallery .yogurtgallery-item:nth-child(1) {
     grid-column: 1 / 1;
     grid-row: 1 / 1;
     padding-bottom: 100%;
     width: 0;
 }
 
-.yogurtgallery-item:nth-child(2) {
+#yogurtgallery-gallery .yogurtgallery-item:nth-child(2) {
     grid-column: 1 / 1;
     grid-row: 1 / 1;
 }
 
-.yogurtgallery-item:not(:nth-child(1)) {
+#yogurtgallery-gallery .yogurtgallery-item:not(:nth-child(1)) {
     display: block;
 }
 
-.yogurtgallery-item-thumbnail-container {
+#yogurtgallery-gallery .yogurtgallery-item-thumbnail-container {
     display: block;
     height: 100%;
     overflow: hidden;
     width: 100%;
 }
 
-.yogurtgallery-item-thumbnail {
+#yogurtgallery-gallery .yogurtgallery-item-thumbnail {
     background-position: center center;
     background-size: cover;
     display: block;

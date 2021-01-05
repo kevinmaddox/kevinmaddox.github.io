@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>YogurtGallery Demo</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../base-style.css">
+    <link rel="stylesheet" href="src/yogurtgallery.css">
+    <style type="text/css">
+        #yogurtgallery-header {
+            color: var(--faded-color);
+            font-style: italic;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container resize-x">
+        <h1>YogurtGallery Demo<span>Fixed Layout Configuration</span></h1>
+        <p>This is the demonstration page for <a href="https://github.com/kevinmaddox/yogurtgallery">YogurtGallery</a>, a responsive JavaScript web image gallery.</p>
+        <p>The gallery below uses a "fixed" layout. Rows have a specified number of items (5 in this example), and item dimensions scale based on the parent container's width. Try resizing this container to see how the items reflow at different widths.</p>
+        <p>For a demonstration of the "fluid" layout, <a href="yogurtgallery-fluid.html">see this example instead</a>.</p>
+        <p>The pictures below were taken by me. I am not a photographer.</p>
+        <h2>Fixed-layout Gallery</h2>
+        <div id="yogurtgallery"></div>
+    </div>
+    
+    <script type="text/javascript" src="src/yogurtgallery.js"></script>
+    <script type="text/javascript">
+        let gallery = new YogurtGallery(
+            'img/',
+            'db.json',
+            'thumb',
+            {
+                'itemsPerPage': 15,
+                'layoutType': 'fixed',
+                'itemSizeRatio': '1:1',
+                'itemGap': 0.7,
+                'itemsPerRow': 5
+            }
+        );
+    </script>
+</body>
+</html>
