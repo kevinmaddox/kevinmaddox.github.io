@@ -79,13 +79,14 @@ class YogurtGallery {
         
         // - Validate configuration options. -----------------------------------
         let validOptions = {
-            'layoutType':             ['string',  'fluid'],
-            'itemsPerPage':           ['number',  30     ],
-            'maxPaginationLinks':     ['number',  7      ],
-            'itemSizeRatio':          ['string',  '1:1'  ],
-            'itemGap':                ['number',  0      ],
-            'itemsPerRow':            ['number',  6      ],
-            'magnification':          ['number',  1      ]
+            'layoutType':               ['string',  'fluid'],
+            'itemsPerPage':             ['number',  30     ],
+            'maxPaginationLinks':       ['number',  7      ],
+            'itemSizeRatio':            ['string',  '1:1'  ],
+            'itemGap':                  ['number',  0      ],
+            'itemsPerRow':              ['number',  6      ],
+            'magnification':            ['number',  1      ],
+            'enableKeyboardNavigation': ['boolean', true   ]
         };
         
         // Perform validation.
@@ -232,7 +233,8 @@ class YogurtGallery {
                 pageNum = totalPageCount;
             
             // - Build gallery HTML. -------------------------------------------
-            let galleryHTML = '<a class="yogurtgallery-item"></a>';
+            let galleryHTML = '<a id="yogurtgallery-dummy-item" '
+                            + 'class="yogurtgallery-item"></a>';
             for (
                 var i = ((pageNum - 1) * maxEntriesPerPage);
                 i < Math.min((maxEntriesPerPage * pageNum), fileNames.length);
@@ -286,7 +288,8 @@ class YogurtGallery {
             let navHTML = '<div>';
             if (totalPageCount > 1 && (pageNum - 1) >= 1) {
                 navHTML += '<a href="?page=1">[<<]</a>';
-                navHTML += `<a href="?page=${pageNum - 1}">[<]</a>`;
+                navHTML += '<a id="yogurtgallery-nav-prevpage" '
+                        +     `href="?page=${pageNum - 1}">[<]</a>`;
             }
             else
             {
@@ -311,7 +314,8 @@ class YogurtGallery {
             }
             navHTML += '</div><div>';
             if (totalPageCount > 1 && (pageNum + 1) <= totalPageCount) {
-                navHTML += '<a href="?page=' + (pageNum + 1) + '">[>]</a>';
+                navHTML += '<a id="yogurtgallery-nav-nextpage" '
+                        +     `href="?page=${pageNum + 1}">[>]</a>`;
                 navHTML += '<a href="?page=' + totalPageCount + '">[>>]</a>';
             }
             else
@@ -432,6 +436,67 @@ class YogurtGallery {
                 'click',
                 this.closePopup.bind(this)
             );
+            
+            // - Bind keyboard navigation. -------------------------------------
+            if (options.enableKeyboardNavigation) {
+                window.addEventListener('keydown', function(event) {
+                    if (event.defaultPrevented)
+                        return; // Do nothing if the event was already processed
+                    
+                    switch (event.key) {
+                        case 'Right':
+                        case 'ArrowRight':
+                            if (event.repeat)
+                                return;
+                            this._next();
+                            break;
+                        case 'Left':
+                        case 'ArrowLeft':
+                            if (event.repeat)
+                                return;
+                            this._prev();
+                            break;
+                        case 'Escape':
+                            if (event.repeat)
+                                return;
+                            this.closePopup();
+                            break;
+                    }
+                }.bind(this));
+            }
+            
+            // - Finish initialization. ----------------------------------------
+            var newUrl = (window.location.pathname + window.location.search);
+            
+            var autoshow = this._grabGET('popup');
+            if (typeof autoshow !== 'undefined') {
+                if (autoshow === 'first') {
+                    console.log(galleryItems);
+                    galleryItems[1].click();
+                    newUrl = newUrl.replace('&popup=first', '')
+                                   .replace('popup=first', '');
+                }
+                else if (autoshow === 'last') {
+                    galleryItems[galleryItems.length-1].click();
+                    newUrl = newUrl.replace('&popup=last', '')
+                                   .replace('popup=last', '');
+                }
+            }
+            
+            
+            // Remove "page" param if it's the first page.
+            newUrl = newUrl.replace('&page=1', '').replace('page=1', '');
+            // Remove empty search param.
+            if (newUrl.substr(-8) === '&search=')
+                newUrl = newUrl.replace('&search=', '');
+            else if (newUrl.substr(-7) === 'search=')
+                newUrl = newUrl.replace('search=', '');
+            // Remove trailing '?' or empty param from page if necessary.
+            if (newUrl.substr(-1) === '?')
+                newUrl = newUrl.substr(0, newUrl.length - 1);
+            
+            newUrl = newUrl.replace('?&', '?');
+            window.history.replaceState({} , '', newUrl);
         }.bind(this);
         
         request.send();
@@ -448,6 +513,62 @@ class YogurtGallery {
         this._elems.popupFilename.innerHTML = '';
         this._elems.popupLink.href = '#';
         this._lastGalleryItemClicked = null;
+    }
+    
+    /**
+     *
+     * Switches to the next gallery item or goes to the next page.
+     *
+    **/
+    _next() {
+        if (!this._lastGalleryItemClicked) {
+            var next = document.getElementById('yogurtgallery-nav-nextpage');
+            if (next)
+                next.click();
+            
+            return;
+        }
+        
+        var sib = this._lastGalleryItemClicked.nextElementSibling;
+        
+        if (sib) {
+            sib.click();
+        }
+        else {
+            var next = document.getElementById('yogurtgallery-nav-nextpage');
+            if (next) {
+                next.href = next.href + '&popup=first';
+                next.click();
+            }
+        }
+    }
+    
+    /**
+     *
+     * Switches to the previous gallery item or goes to the previous page.
+     *
+    **/
+    _prev() {
+        if (!this._lastGalleryItemClicked) {
+            var prev = document.getElementById('yogurtgallery-nav-prevpage');
+            if (prev)
+                prev.click();
+            
+            return;
+        }
+        
+        var sib = this._lastGalleryItemClicked.previousElementSibling;
+        
+        if (sib && sib.id !== 'yogurtgallery-dummy-item') {
+            sib.click();
+        }
+        else {
+            var prev = document.getElementById('yogurtgallery-nav-prevpage');
+            if (prev) {
+                prev.href = prev.href + '&popup=last';
+                prev.click();
+            }
+        }
     }
     
     /**
@@ -469,7 +590,7 @@ class YogurtGallery {
                   : decodeURIComponent(pair[1]);
             }
         }
-    };
+    }
     
     /**
      *
